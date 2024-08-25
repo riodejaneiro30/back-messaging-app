@@ -1,6 +1,6 @@
-# Project Name
+# Chat Room Backend
 
-Brief description of your project.
+This project use node.js and socket.io
 
 ## Prerequisites
 
