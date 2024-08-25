@@ -1,0 +1,21 @@
+{
+  "name": "back-messaging-app",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "js-sha256": "^0.11.0",
+    "jwt-then": "^1.0.1",
+    "mongoose": "^8.5.3",
+    "socket.io": "^4.7.5"
+  }
+}
