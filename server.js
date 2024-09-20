@@ -35,17 +35,39 @@ io.use(async (socket, next) => {
         const token = socket.handshake.query.token;
         const payload = await jwt.verify(token, process.env.SECRET_KEY);
         socket.userId = payload._id;
+
+        const user = await User.findOne({ _id: socket.userId });
+        socket.name = user.name;
         
         next();
     } catch (error) {
     }
 });
 
+let onlineUsers = [];
+
 io.on("connection", (socket) => {
     console.log("User connected : ", socket.userId);
 
+    const userExists = onlineUsers.some(user => user.userId === socket.userId);
+
+    if (!userExists) {
+        onlineUsers.push({
+            userId: socket.userId,
+            name: socket.name
+        });
+    }
+
+    io.emit("updateOnlineUsers", onlineUsers);
+    console.log("onlineUsers", onlineUsers);
+
     socket.on("disconnect", () => {
         console.log("User disconnected : ", socket.userId);
+
+        onlineUsers = onlineUsers.filter(user => user.userId !== socket.userId);
+
+        io.emit("updateOnlineUsers", onlineUsers);
+        console.log("onlineUsers", onlineUsers);
     });
 
     socket.on("joinChatroom", ({chatroomId}) => {

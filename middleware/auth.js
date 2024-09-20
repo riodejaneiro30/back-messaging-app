@@ -7,10 +7,10 @@ module.exports = async (req, res, next) => {
         }
         const token = req.headers.authorization.split(' ')[1];
 
-        console.log("Token : {}", token);
+        //console.log("Token : {}", token);
 
         const payload = await jwt.verify(token, process.env.SECRET_KEY);
-        console.log("Payload : {}", payload)
+        //console.log("Payload : {}", payload)
 
         req.payload = payload;
         
