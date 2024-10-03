@@ -61,6 +61,18 @@ io.on("connection", (socket) => {
     io.emit("updateOnlineUsers", onlineUsers);
     console.log("onlineUsers", onlineUsers);
 
+    socket.on("getOnlineUsers", () => {
+        socket.emit("updateOnlineUsers", onlineUsers);
+    });
+
+    socket.on("importantMessage", (data) => {
+        const { message } = data;
+
+        console.log("Important Message : ", message);
+        // Broadcast to all connected chatrooms
+        io.emit("receiveImportantMessage", { message });
+    });
+
     socket.on("disconnect", () => {
         console.log("User disconnected : ", socket.userId);
 
@@ -80,7 +92,7 @@ io.on("connection", (socket) => {
         console.log("User left chatroom : ", chatroomId);
     });
 
-    socket.on("chatroomMessage", async ({chatroomId, message}) => {
+    socket.on("chatroomMessage", async ({chatroomId, message, formattedTime}) => {
         if (message.trim().length > 0) {
             const user = await User.findOne({ _id: socket.userId });
             const messageNew = new Message(
@@ -91,10 +103,13 @@ io.on("connection", (socket) => {
                 }
             )
 
+            console.log("Chatroom Message : ", message);
+
             io.to(chatroomId).emit("receiveMessage", {
                 message: message,
                 name: user.name,
                 sender: socket.userId,
+                formattedTime: formattedTime
             });
 
             await messageNew.save();

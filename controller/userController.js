@@ -40,8 +40,17 @@ const login = async (req, res) => {
     res.status(200).json({ message: "Login successful", token: token });
 };
 
+const getUser = async (req, res) => {
+    const { token } = req.body;
+    const payload = await jwt.verify(token, process.env.SECRET_KEY);
+
+    const user = await User.findOne({ _id: payload._id });
+
+    res.status(200).json({ id : user._id, name : user.name, email : user.email });
+}
+
 module.exports = {
-    register, login
+    register, login, getUser
 };
 
 
